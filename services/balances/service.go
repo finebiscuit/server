@@ -1,9 +1,9 @@
-package accounting
+package balances
 
 import (
 	"context"
 
-	"github.com/finebiscuit/server/services/accounting/balance"
+	"github.com/finebiscuit/server/services/balances/balance"
 )
 
 type Service interface {

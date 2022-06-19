@@ -2,7 +2,7 @@ package balance
 
 import (
 	"github.com/finebiscuit/server/model/buid"
-	"github.com/finebiscuit/server/services/accounting/kind"
+	"github.com/finebiscuit/server/services/balances/kind"
 )
 
 type ID struct {

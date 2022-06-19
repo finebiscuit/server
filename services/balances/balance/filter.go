@@ -1,6 +1,6 @@
 package balance
 
-import "github.com/finebiscuit/server/services/accounting/kind"
+import "github.com/finebiscuit/server/services/balances/kind"
 
 type Filter struct {
 	IDs     []ID
