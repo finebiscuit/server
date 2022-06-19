@@ -1,14 +1,25 @@
 package date
 
+import "time"
+
 type Date struct {
-	year       uint16
-	month, day uint8
+	year  int
+	month time.Month
+	day   int
 }
 
-func New(year, month, day int) Date {
+func New(year int, month time.Month, day int) Date {
 	return Date{
-		year:  uint16(year),
-		month: uint8(month),
-		day:   uint8(day),
+		year:  year,
+		month: month,
+		day:   day,
 	}
+}
+
+func NewFromTime(t time.Time) Date {
+	return New(t.Year(), t.Month(), t.Day())
+}
+
+func Today() Date {
+	return NewFromTime(time.Now())
 }

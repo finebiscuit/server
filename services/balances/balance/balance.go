@@ -18,3 +18,21 @@ type WithEntry struct {
 	Balance
 	Entry Entry
 }
+
+func New() (*Balance, error) {
+	id, err := buid.New()
+	if err != nil {
+		return nil, err
+	}
+	b := &Balance{
+		ID: ID{id},
+	}
+	return b, nil
+}
+
+func Must(b *Balance, err error) *Balance {
+	if err != nil {
+		panic(err)
+	}
+	return b
+}
