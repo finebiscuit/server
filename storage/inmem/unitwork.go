@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/finebiscuit/server/services/balances/balance"
-	"github.com/finebiscuit/server/services/balances/kind"
 )
 
 type unitOfWork struct {
@@ -19,8 +18,4 @@ func (s *InMem) newUnitOfWork(ctx context.Context) *unitOfWork {
 
 func (uow *unitOfWork) Balances() balance.Repository {
 	return &accountingBalancesRepo{uow: uow}
-}
-
-func (uow *unitOfWork) Kinds() kind.Repository {
-	return &accountingKindsRepo{uow: uow}
 }

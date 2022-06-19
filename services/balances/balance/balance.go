@@ -2,7 +2,6 @@ package balance
 
 import (
 	"github.com/finebiscuit/server/model/buid"
-	"github.com/finebiscuit/server/services/balances/kind"
 )
 
 type ID struct {
@@ -10,8 +9,9 @@ type ID struct {
 }
 
 type Balance struct {
-	ID     ID
-	KindID kind.ID
+	ID         ID
+	TypeID     string
+	CurrencyID string
 }
 
 type WithEntry struct {

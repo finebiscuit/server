@@ -6,7 +6,6 @@ import (
 
 	"github.com/finebiscuit/server/services/balances"
 	"github.com/finebiscuit/server/services/balances/balance"
-	"github.com/finebiscuit/server/services/balances/kind"
 )
 
 type InMem struct {
@@ -17,7 +16,6 @@ type InMem struct {
 func New() *InMem {
 	return &InMem{
 		DB: &Database{
-			Kinds:    make(map[kind.ID]*kind.Kind),
 			Balances: make(map[balance.ID]*StorageBalance),
 		},
 	}
@@ -38,6 +36,5 @@ func (s *InMem) BalancesTxFn() balances.TxFn {
 }
 
 type Database struct {
-	Kinds    map[kind.ID]*kind.Kind
 	Balances map[balance.ID]*StorageBalance
 }
