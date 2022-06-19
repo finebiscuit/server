@@ -1,6 +1,9 @@
 package date
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 type Date struct {
 	year  int
@@ -22,4 +25,8 @@ func NewFromTime(t time.Time) Date {
 
 func Today() Date {
 	return NewFromTime(time.Now())
+}
+
+func (d Date) String() string {
+	return fmt.Sprintf("%4d-%2d-%2d", d.year, d.month, d.day)
 }

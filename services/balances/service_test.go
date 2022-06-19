@@ -28,7 +28,7 @@ func TestService_ListBalances(t *testing.T) {
 		db := inmem.New()
 		svc := balances.NewService(db.BalancesTxFn())
 
-		b := balance.Must(balance.New())
+		b := balance.Must(balance.New("", ""))
 		e := balance.MustEntry(balance.NewEntry())
 		db.DB.Balances[b.ID] = &inmem.StorageBalance{
 			Balance:      *b,
@@ -53,7 +53,7 @@ func TestService_CreateBalance(t *testing.T) {
 		db := inmem.New()
 		svc := balances.NewService(db.BalancesTxFn())
 
-		b := balance.Must(balance.New())
+		b := balance.Must(balance.New("", ""))
 		e := balance.MustEntry(balance.NewEntry())
 
 		err := svc.CreateBalance(context.Background(), b, e)

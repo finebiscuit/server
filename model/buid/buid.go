@@ -9,6 +9,11 @@ func New() (BUID, error) {
 	return BUID(u), err
 }
 
+func Parse(s string) (BUID, error) {
+	u, err := uuid.Parse(s)
+	return BUID(u), err
+}
+
 func (id BUID) String() string {
 	return uuid.UUID(id).String()
 }
