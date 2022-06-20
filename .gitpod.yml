@@ -12,3 +12,9 @@ jetbrains:
   goland:
     prebuilds:
       version: stable
+
+additionalRepositories:
+  - url: https://github.com/finebiscuit/client
+    checkoutLocation: client
+  - url: https://github.com/finebiscuit/proto
+    checkoutLocation: proto
