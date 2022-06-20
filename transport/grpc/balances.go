@@ -2,8 +2,11 @@ package grpc
 
 import (
 	"context"
+	"encoding/base64"
 
 	pb "github.com/finebiscuit/proto/biscuit/accounting/v1"
+
+	"github.com/finebiscuit/server/model/payload"
 	"github.com/finebiscuit/server/services/balances"
 	"github.com/finebiscuit/server/services/balances/balance"
 )
@@ -19,7 +22,7 @@ func NewBalancesServer(balancesService balances.Service) pb.AccountingServer {
 	}
 }
 
-func (s *balancesServer) ListBalances(ctx context.Context, req *pb.ListBalancesRequest) (*pb.ListBalancesResponse, error) {
+func (s *balancesServer) ListBalances(ctx context.Context, _ *pb.ListBalancesRequest) (*pb.ListBalancesResponse, error) {
 	bals, err := s.Balances.ListBalances(ctx, balance.Filter{})
 	if err != nil {
 		return nil, err
@@ -51,12 +54,20 @@ func (s *balancesServer) GetBalance(ctx context.Context, req *pb.GetBalanceReque
 }
 
 func (s *balancesServer) CreateBalance(ctx context.Context, req *pb.CreateBalanceRequest) (*pb.CreateBalanceResponse, error) {
-	b, err := balance.New(req.Balance.TypeId, req.Balance.CurrencyId)
+	bp, err := protoToPayload(req.GetBalance().GetEncData())
+	if err != nil {
+		return nil, err
+	}
+	b, err := balance.New(req.Balance.TypeId, req.Balance.CurrencyId, bp)
 	if err != nil {
 		return nil, err
 	}
 
-	e, err := balance.NewEntry()
+	ep, err := protoToPayload(req.GetBalance().GetEncData())
+	if err != nil {
+		return nil, err
+	}
+	e, err := balance.NewEntry(ep)
 	if err != nil {
 		return nil, err
 	}
@@ -79,8 +90,31 @@ func balanceToProto(b *balance.WithEntry) *pb.Balance {
 		Id:         b.ID.String(),
 		TypeId:     b.TypeID,
 		CurrencyId: b.CurrencyID,
+		EncData:    payloadToProto(b.Payload),
 		CurrentEntry: &pb.Entry{
-			Id: b.Entry.YMD.String(),
+			Id:      b.Entry.YMD.String(),
+			EncData: payloadToProto(b.Entry.Payload),
 		},
 	}
+}
+
+func payloadToProto(p payload.Payload) *pb.EncryptedData {
+	value := base64.StdEncoding.EncodeToString(p.Blob)
+	return &pb.EncryptedData{
+		VersionHash: p.Version,
+		Algo:        uint32(p.Scheme),
+		Base64Value: value,
+	}
+}
+
+func protoToPayload(encData *pb.EncryptedData) (payload.Payload, error) {
+	s, err := payload.NewScheme(int(encData.Algo))
+	if err != nil {
+		return payload.Payload{}, err
+	}
+	blob, err := base64.StdEncoding.DecodeString(encData.Base64Value)
+	if err != nil {
+		return payload.Payload{}, err
+	}
+	return payload.New(s, encData.VersionHash, blob)
 }

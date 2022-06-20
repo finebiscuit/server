@@ -1,18 +1,23 @@
 package balance
 
-import "github.com/finebiscuit/server/model/date"
+import (
+	"github.com/finebiscuit/server/model/date"
+	"github.com/finebiscuit/server/model/payload"
+)
 
 type Entry struct {
-	YMD date.Date
+	YMD     date.Date
+	Payload payload.Payload
 }
 
-func NewEntry() (*Entry, error) {
-	return NewEntryWithDate(date.Today())
+func NewEntry(p payload.Payload) (*Entry, error) {
+	return NewEntryWithDate(date.Today(), p)
 }
 
-func NewEntryWithDate(ymd date.Date) (*Entry, error) {
+func NewEntryWithDate(ymd date.Date, p payload.Payload) (*Entry, error) {
 	e := &Entry{
-		YMD: ymd,
+		YMD:     ymd,
+		Payload: p,
 	}
 	return e, nil
 }

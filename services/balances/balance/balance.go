@@ -2,6 +2,7 @@ package balance
 
 import (
 	"github.com/finebiscuit/server/model/buid"
+	"github.com/finebiscuit/server/model/payload"
 )
 
 type ID struct {
@@ -17,6 +18,7 @@ type Balance struct {
 	ID         ID
 	TypeID     string
 	CurrencyID string
+	Payload    payload.Payload
 }
 
 type WithEntry struct {
@@ -24,7 +26,7 @@ type WithEntry struct {
 	Entry Entry
 }
 
-func New(typeID, currencyID string) (*Balance, error) {
+func New(typeID, currencyID string, p payload.Payload) (*Balance, error) {
 	id, err := buid.New()
 	if err != nil {
 		return nil, err
@@ -33,6 +35,7 @@ func New(typeID, currencyID string) (*Balance, error) {
 		ID:         ID{id},
 		TypeID:     typeID,
 		CurrencyID: currencyID,
+		Payload:    p,
 	}
 	return b, nil
 }
