@@ -55,8 +55,9 @@ func TestService_CreateBalance(t *testing.T) {
 
 		b, e := newMockBalanceAndEntry()
 
-		err := svc.CreateBalance(context.Background(), b, e)
+		bwe, err := svc.CreateBalance(context.Background(), b, e)
 		require.NoError(t, err)
+		assert.NotEmpty(t, bwe)
 
 		expected := &inmem.StorageBalance{
 			Balance:      *b,
