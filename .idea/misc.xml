@@ -4,40 +4,44 @@
     <option name="openedFilesInfos">
       <list>
         <OpenedFileInfo>
-          <option name="caretOffset" value="0" />
-          <option name="fileUrl" value="file://$PROJECT_DIR$/storage/inmem/balances.go" />
-        </OpenedFileInfo>
-        <OpenedFileInfo>
-          <option name="caretOffset" value="0" />
-          <option name="fileUrl" value="file://$PROJECT_DIR$/model/date/date.go" />
-        </OpenedFileInfo>
-        <OpenedFileInfo>
-          <option name="caretOffset" value="0" />
-          <option name="fileUrl" value="file://$PROJECT_DIR$/model/payload/errors.go" />
-        </OpenedFileInfo>
-        <OpenedFileInfo>
-          <option name="caretOffset" value="0" />
-          <option name="fileUrl" value="file://$PROJECT_DIR$/model/payload/payload.go" />
-        </OpenedFileInfo>
-        <OpenedFileInfo>
-          <option name="caretOffset" value="0" />
-          <option name="fileUrl" value="file://$PROJECT_DIR$/model/payload/payload_test.go" />
-        </OpenedFileInfo>
-        <OpenedFileInfo>
-          <option name="caretOffset" value="0" />
-          <option name="fileUrl" value="file://$PROJECT_DIR$/model/payload/scheme.go" />
-        </OpenedFileInfo>
-        <OpenedFileInfo>
-          <option name="caretOffset" value="1242" />
+          <option name="caretOffset" value="359" />
           <option name="fileUrl" value="file://$PROJECT_DIR$/services/balances/service_test.go" />
         </OpenedFileInfo>
         <OpenedFileInfo>
-          <option name="caretOffset" value="275" />
-          <option name="fileUrl" value="file://$PROJECT_DIR$/.gitignore" />
+          <option name="caretOffset" value="370" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/services/balances/service.go" />
         </OpenedFileInfo>
         <OpenedFileInfo>
-          <option name="caretOffset" value="270" />
-          <option name="fileUrl" value="file://$PROJECT_DIR$/.gitpod.yml" />
+          <option name="caretOffset" value="1341" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/transport/grpc/balances.go" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="299" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/services/balances/balance/entry.go" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="0" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/services/balances/unitwork.go" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="504" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/cmd/grpc-server/main.go" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="112" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/go.mod" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="512" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/services/balances/client.go" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="353" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/services/balances/balance/balance.go" />
+        </OpenedFileInfo>
+        <OpenedFileInfo>
+          <option name="caretOffset" value="344" />
+          <option name="fileUrl" value="file://$PROJECT_DIR$/services/balances/handler.go" />
         </OpenedFileInfo>
       </list>
     </option>

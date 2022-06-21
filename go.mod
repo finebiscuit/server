@@ -3,10 +3,10 @@ module github.com/finebiscuit/server
 go 1.18
 
 require (
-	github.com/finebiscuit/proto v0.0.0-20220620195256-77ae1bb3ab4d
+	github.com/bufbuild/connect-go v0.1.1
+	github.com/finebiscuit/proto v0.0.0-20220621113739-e19ffc49dd6c
 	github.com/google/uuid v1.3.0
 	github.com/stretchr/testify v1.7.2
-	google.golang.org/grpc v1.44.0
 )
 
 require (
@@ -18,6 +18,7 @@ require (
 	golang.org/x/sys v0.0.0-20210510120138-977fb7262007 // indirect
 	golang.org/x/text v0.3.5 // indirect
 	google.golang.org/genproto v0.0.0-20220211171837-173942840c17 // indirect
-	google.golang.org/protobuf v1.27.1 // indirect
+	google.golang.org/grpc v1.44.0 // indirect
+	google.golang.org/protobuf v1.28.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
