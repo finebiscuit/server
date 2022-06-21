@@ -38,3 +38,25 @@ func Today() Date {
 func (d Date) String() string {
 	return fmt.Sprintf("%4d-%2d-%2d", d.year, d.month, d.day)
 }
+
+func (d Date) After(other Date) bool {
+	if d.year > other.year {
+		return true
+	} else if d.year < other.year {
+		return false
+	}
+
+	if d.month > other.month {
+		return true
+	} else if d.month < other.month {
+		return false
+	}
+
+	if d.day > other.day {
+		return true
+	} else if d.day < other.day {
+		return false
+	}
+
+	return false
+}

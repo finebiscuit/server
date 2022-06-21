@@ -7,6 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	"github.com/finebiscuit/server/model/date"
 	"github.com/finebiscuit/server/model/payload"
 	"github.com/finebiscuit/server/services/balances"
 	"github.com/finebiscuit/server/services/balances/balance"
@@ -31,8 +32,11 @@ func TestService_ListBalances(t *testing.T) {
 
 		b, e := newMockBalanceAndEntry()
 		db.DB.Balances[b.ID] = &inmem.StorageBalance{
-			Balance:      *b,
-			CurrentEntry: *e,
+			Balance: *b,
+			Entries: map[date.Date]balance.Entry{
+				e.YMD: *e,
+			},
+			CurrentYMD: e.YMD,
 		}
 
 		result, err := svc.ListBalances(context.Background(), balance.Filter{})
@@ -60,8 +64,11 @@ func TestService_CreateBalance(t *testing.T) {
 		assert.NotEmpty(t, bwe)
 
 		expected := &inmem.StorageBalance{
-			Balance:      *b,
-			CurrentEntry: *e,
+			Balance: *b,
+			Entries: map[date.Date]balance.Entry{
+				e.YMD: *e,
+			},
+			CurrentYMD: e.YMD,
 		}
 		assert.Equal(t, expected, db.DB.Balances[b.ID])
 	})

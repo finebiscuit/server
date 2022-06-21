@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/bufbuild/connect-go v0.1.1
-	github.com/finebiscuit/proto v0.0.0-20220621113739-e19ffc49dd6c
+	github.com/finebiscuit/proto v0.0.0-20220621200019-5c9721a13425
 	github.com/google/uuid v1.3.0
 	github.com/stretchr/testify v1.7.2
 )
@@ -12,7 +12,6 @@ require (
 require (
 	github.com/davecgh/go-spew v1.1.0 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
-	github.com/grpc-ecosystem/grpc-gateway/v2 v2.7.3 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	golang.org/x/net v0.0.0-20210405180319-a5a99cb37ef4 // indirect
 	golang.org/x/sys v0.0.0-20210510120138-977fb7262007 // indirect

@@ -25,10 +25,10 @@ type handler struct {
 
 var _ balancesv1connect.BalancesHandler = &handler{}
 
-func (h *handler) Get(
+func (h *handler) GetBalance(
 	ctx context.Context,
-	req *connect.Request[balancesv1.GetRequest],
-) (*connect.Response[balancesv1.GetResponse], error) {
+	req *connect.Request[balancesv1.GetBalanceRequest],
+) (*connect.Response[balancesv1.GetBalanceResponse], error) {
 	id, err := balance.ParseID(req.Msg.GetBalanceId())
 	if err != nil {
 		return nil, connect.NewError(connect.CodeInvalidArgument, err)
@@ -42,22 +42,22 @@ func (h *handler) Get(
 		return nil, connect.NewError(connect.CodeInternal, err)
 	}
 
-	res := connect.NewResponse(&balancesv1.GetResponse{
+	res := connect.NewResponse(&balancesv1.GetBalanceResponse{
 		Balance: b.AsProto(),
 	})
 	return res, nil
 }
 
-func (h *handler) List(
+func (h *handler) ListBalances(
 	ctx context.Context,
-	req *connect.Request[balancesv1.ListRequest],
-) (*connect.Response[balancesv1.ListResponse], error) {
+	req *connect.Request[balancesv1.ListBalancesRequest],
+) (*connect.Response[balancesv1.ListBalancesResponse], error) {
 	bals, err := h.Balances.ListBalances(ctx, balance.Filter{})
 	if err != nil {
 		return nil, connect.NewError(connect.CodeInternal, err)
 	}
 
-	res := connect.NewResponse(&balancesv1.ListResponse{
+	res := connect.NewResponse(&balancesv1.ListBalancesResponse{
 		Balances: make([]*balancesv1.Balance, 0, len(bals)),
 	})
 
@@ -67,10 +67,10 @@ func (h *handler) List(
 	return res, nil
 }
 
-func (h *handler) Create(
+func (h *handler) CreateBalance(
 	ctx context.Context,
-	req *connect.Request[balancesv1.CreateRequest],
-) (*connect.Response[balancesv1.CreateResponse], error) {
+	req *connect.Request[balancesv1.CreateBalanceRequest],
+) (*connect.Response[balancesv1.CreateBalanceResponse], error) {
 	bp, err := balance.NewPayloadFromProto(req.Msg.GetBalancePayload())
 	if err != nil {
 		return nil, connect.NewError(connect.CodeInvalidArgument, err)
@@ -94,15 +94,93 @@ func (h *handler) Create(
 		return nil, connect.NewError(connect.CodeInternal, err)
 	}
 
-	res := connect.NewResponse(&balancesv1.CreateResponse{
+	res := connect.NewResponse(&balancesv1.CreateBalanceResponse{
 		Balance: bwe.AsProto(),
 	})
 	return res, nil
 }
 
-func (h *handler) UpsertEntry(
+func (h *handler) UpdateBalance(
 	ctx context.Context,
-	req *connect.Request[balancesv1.UpsertEntryRequest],
-) (*connect.Response[balancesv1.UpsertEntryResponse], error) {
+	req *connect.Request[balancesv1.UpdateBalanceRequest],
+) (*connect.Response[balancesv1.UpdateBalanceResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("not implemented"))
+}
+
+func (h *handler) GetEntry(
+	ctx context.Context,
+	req *connect.Request[balancesv1.GetEntryRequest],
+) (*connect.Response[balancesv1.GetEntryResponse], error) {
+	// TODO implement GetEntry
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("not implemented"))
+}
+
+func (h *handler) ListEntries(
+	ctx context.Context,
+	req *connect.Request[balancesv1.ListEntriesRequest],
+) (*connect.Response[balancesv1.ListEntriesResponse], error) {
+	// TODO implement ListEntries
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("not implemented"))
+}
+
+func (h *handler) CreateEntry(
+	ctx context.Context,
+	req *connect.Request[balancesv1.CreateEntryRequest],
+) (*connect.Response[balancesv1.CreateEntryResponse], error) {
+	balanceID, err := balance.ParseID(req.Msg.GetBalanceId())
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInvalidArgument, err)
+	}
+
+	ep, err := balance.NewPayloadFromProto(req.Msg.GetEntryPayload())
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInvalidArgument, err)
+	}
+	e, err := balance.NewEntryWithString(req.Msg.GetEntryYmd(), ep)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInvalidArgument, err)
+	}
+
+	if err := h.Balances.CreateEntry(ctx, balanceID, e); err != nil {
+		return nil, connect.NewError(connect.CodeInternal, err)
+	}
+
+	res := connect.NewResponse(&balancesv1.CreateEntryResponse{
+		Entry: &balancesv1.Entry{
+			Ymd:     e.YMD.String(),
+			Payload: balance.EncodePayloadToProto(e.Payload),
+		},
+	})
+	return res, nil
+}
+
+func (h *handler) UpdateEntry(
+	ctx context.Context,
+	req *connect.Request[balancesv1.UpdateEntryRequest],
+) (*connect.Response[balancesv1.UpdateEntryResponse], error) {
+	balanceID, err := balance.ParseID(req.Msg.GetBalanceId())
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInvalidArgument, err)
+	}
+
+	ep, err := balance.NewPayloadFromProto(req.Msg.GetEntryPayload())
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInvalidArgument, err)
+	}
+	e, err := balance.NewEntryWithString(req.Msg.GetEntryYmd(), ep)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInvalidArgument, err)
+	}
+
+	if err := h.Balances.UpdateEntry(ctx, balanceID, e, req.Msg.GetVersionMatch()); err != nil {
+		return nil, connect.NewError(connect.CodeInternal, err)
+	}
+
+	res := connect.NewResponse(&balancesv1.UpdateEntryResponse{
+		Entry: &balancesv1.Entry{
+			Ymd:     e.YMD.String(),
+			Payload: balance.EncodePayloadToProto(e.Payload),
+		},
+	})
+	return res, nil
 }

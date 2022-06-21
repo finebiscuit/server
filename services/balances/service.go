@@ -10,6 +10,8 @@ type Service interface {
 	GetBalance(ctx context.Context, id balance.ID) (*balance.WithEntry, error)
 	ListBalances(ctx context.Context, filter balance.Filter) ([]*balance.WithEntry, error)
 	CreateBalance(ctx context.Context, b *balance.Balance, e *balance.Entry) (*balance.WithEntry, error)
+	CreateEntry(ctx context.Context, id balance.ID, e *balance.Entry) error
+	UpdateEntry(ctx context.Context, id balance.ID, e *balance.Entry, versionMatch string) error
 }
 
 func NewService(tx TxFn) Service {
@@ -56,11 +58,15 @@ func (s serviceImpl) CreateBalance(
 	ctx context.Context, b *balance.Balance, e *balance.Entry,
 ) (*balance.WithEntry, error) {
 	var result *balance.WithEntry
-	err := s.tx(ctx, func(ctx context.Context, uow UnitOfWork) error {
-		err := uow.Balances().Create(ctx, b, e)
-		if err != nil {
+	err := s.tx(ctx, func(ctx context.Context, uow UnitOfWork) (err error) {
+		if err := uow.Balances().Create(ctx, b); err != nil {
 			return err
 		}
+
+		if err := uow.Balances().CreateEntry(ctx, b.ID, e); err != nil {
+			return err
+		}
+
 		result, err = uow.Balances().Get(ctx, b.ID)
 		if err != nil {
 			return err
@@ -72,4 +78,41 @@ func (s serviceImpl) CreateBalance(
 	}
 
 	return result, nil
+}
+
+func (s serviceImpl) CreateEntry(ctx context.Context, balanceID balance.ID, e *balance.Entry) error {
+	err := s.tx(ctx, func(ctx context.Context, uow UnitOfWork) error {
+		if err := uow.Balances().CreateEntry(ctx, balanceID, e); err != nil {
+			return err
+		}
+		return nil
+	})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s serviceImpl) UpdateEntry(
+	ctx context.Context, balanceID balance.ID, e *balance.Entry, versionMatch string,
+) error {
+	err := s.tx(ctx, func(ctx context.Context, uow UnitOfWork) error {
+		e, err := uow.Balances().GetEntry(ctx, balanceID, e.YMD)
+		if err != nil {
+			return err
+		}
+
+		if e.Payload.Version != versionMatch {
+			return balance.ErrVersionMismatch
+		}
+
+		if err := uow.Balances().UpdateEntry(ctx, balanceID, e); err != nil {
+			return err
+		}
+		return nil
+	})
+	if err != nil {
+		return err
+	}
+	return nil
 }

@@ -23,8 +23,8 @@ type client struct {
 var _ Service = &client{}
 
 func (c *client) GetBalance(ctx context.Context, id balance.ID) (*balance.WithEntry, error) {
-	req := connect.NewRequest(&balancesv1.GetRequest{BalanceId: id.String()})
-	res, err := c.Balances.Get(ctx, req)
+	req := connect.NewRequest(&balancesv1.GetBalanceRequest{BalanceId: id.String()})
+	res, err := c.Balances.GetBalance(ctx, req)
 	if err != nil {
 		return nil, err
 	}
@@ -37,8 +37,8 @@ func (c *client) GetBalance(ctx context.Context, id balance.ID) (*balance.WithEn
 }
 
 func (c *client) ListBalances(ctx context.Context, filter balance.Filter) ([]*balance.WithEntry, error) {
-	req := connect.NewRequest(&balancesv1.ListRequest{})
-	res, err := c.Balances.List(ctx, req)
+	req := connect.NewRequest(&balancesv1.ListBalancesRequest{})
+	res, err := c.Balances.ListBalances(ctx, req)
 	if err != nil {
 		return nil, err
 	}
@@ -55,14 +55,14 @@ func (c *client) ListBalances(ctx context.Context, filter balance.Filter) ([]*ba
 }
 
 func (c *client) CreateBalance(ctx context.Context, b *balance.Balance, e *balance.Entry) (*balance.WithEntry, error) {
-	req := connect.NewRequest(&balancesv1.CreateRequest{
+	req := connect.NewRequest(&balancesv1.CreateBalanceRequest{
 		TypeId:         b.TypeID,
 		CurrencyId:     b.CurrencyID,
 		BalancePayload: balance.EncodePayloadToProto(b.Payload),
 		EntryYmd:       e.YMD.String(),
 		EntryPayload:   balance.EncodePayloadToProto(e.Payload),
 	})
-	res, err := c.Balances.Create(ctx, req)
+	res, err := c.Balances.CreateBalance(ctx, req)
 	if err != nil {
 		return nil, err
 	}
@@ -73,4 +73,31 @@ func (c *client) CreateBalance(ctx context.Context, b *balance.Balance, e *balan
 	}
 
 	return bwe, nil
+}
+
+func (c *client) CreateEntry(ctx context.Context, id balance.ID, e *balance.Entry) error {
+	req := connect.NewRequest(&balancesv1.CreateEntryRequest{
+		BalanceId:    id.String(),
+		EntryYmd:     e.YMD.String(),
+		EntryPayload: balance.EncodePayloadToProto(e.Payload),
+	})
+	_, err := c.Balances.CreateEntry(ctx, req)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (c *client) UpdateEntry(ctx context.Context, id balance.ID, e *balance.Entry, versionMatch string) error {
+	req := connect.NewRequest(&balancesv1.UpdateEntryRequest{
+		BalanceId:    id.String(),
+		EntryYmd:     e.YMD.String(),
+		EntryPayload: balance.EncodePayloadToProto(e.Payload),
+		VersionMatch: versionMatch,
+	})
+	_, err := c.Balances.UpdateEntry(ctx, req)
+	if err != nil {
+		return err
+	}
+	return nil
 }
