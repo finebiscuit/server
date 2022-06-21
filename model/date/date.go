@@ -23,6 +23,14 @@ func NewFromTime(t time.Time) Date {
 	return New(t.Year(), t.Month(), t.Day())
 }
 
+func NewFromString(s string) (Date, error) {
+	t, err := time.Parse("2006-01-02", s)
+	if err != nil {
+		return Date{}, err
+	}
+	return NewFromTime(t), nil
+}
+
 func Today() Date {
 	return NewFromTime(time.Now())
 }

@@ -3,7 +3,7 @@ module github.com/finebiscuit/server
 go 1.18
 
 require (
-	github.com/finebiscuit/proto v0.0.0-20220220191810-e09c62f629af
+	github.com/finebiscuit/proto v0.0.0-20220620195256-77ae1bb3ab4d
 	github.com/google/uuid v1.3.0
 	github.com/stretchr/testify v1.7.2
 	google.golang.org/grpc v1.44.0

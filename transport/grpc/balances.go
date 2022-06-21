@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 
-	pb "github.com/finebiscuit/proto/biscuit/accounting/v1"
+	pb "github.com/finebiscuit/proto/biscuit/balances/v1"
 
 	"github.com/finebiscuit/server/model/payload"
 	"github.com/finebiscuit/server/services/balances"
@@ -12,23 +12,23 @@ import (
 )
 
 type balancesServer struct {
-	pb.UnimplementedAccountingServer
+	pb.UnimplementedBalancesServer
 	Balances balances.Service
 }
 
-func NewBalancesServer(balancesService balances.Service) pb.AccountingServer {
+func NewBalancesServer(balancesService balances.Service) pb.BalancesServer {
 	return &balancesServer{
 		Balances: balancesService,
 	}
 }
 
-func (s *balancesServer) ListBalances(ctx context.Context, _ *pb.ListBalancesRequest) (*pb.ListBalancesResponse, error) {
+func (s *balancesServer) ListBalances(ctx context.Context, _ *pb.ListRequest) (*pb.ListResponse, error) {
 	bals, err := s.Balances.ListBalances(ctx, balance.Filter{})
 	if err != nil {
 		return nil, err
 	}
 
-	res := &pb.ListBalancesResponse{
+	res := &pb.ListResponse{
 		Balances: make([]*pb.Balance, len(bals)),
 	}
 
@@ -38,7 +38,7 @@ func (s *balancesServer) ListBalances(ctx context.Context, _ *pb.ListBalancesReq
 	return res, nil
 }
 
-func (s *balancesServer) GetBalance(ctx context.Context, req *pb.GetBalanceRequest) (*pb.GetBalanceResponse, error) {
+func (s *balancesServer) GetBalance(ctx context.Context, req *pb.GetRequest) (*pb.GetResponse, error) {
 	id, err := balance.ParseID(req.GetBalanceId())
 	if err != nil {
 		return nil, err
@@ -49,25 +49,25 @@ func (s *balancesServer) GetBalance(ctx context.Context, req *pb.GetBalanceReque
 		return nil, err
 	}
 
-	res := &pb.GetBalanceResponse{Balance: balanceToProto(b)}
+	res := &pb.GetResponse{Balance: balanceToProto(b)}
 	return res, nil
 }
 
-func (s *balancesServer) CreateBalance(ctx context.Context, req *pb.CreateBalanceRequest) (*pb.CreateBalanceResponse, error) {
-	bp, err := protoToPayload(req.GetBalance().GetEncData())
+func (s *balancesServer) CreateBalance(ctx context.Context, req *pb.CreateRequest) (*pb.CreateResponse, error) {
+	bp, err := protoToPayload(req.GetBalancePayload())
 	if err != nil {
 		return nil, err
 	}
-	b, err := balance.New(req.Balance.TypeId, req.Balance.CurrencyId, bp)
+	b, err := balance.New(req.GetTypeId(), req.GetCurrencyId(), bp)
 	if err != nil {
 		return nil, err
 	}
 
-	ep, err := protoToPayload(req.GetBalance().GetEncData())
+	ep, err := protoToPayload(req.GetEntryPayload())
 	if err != nil {
 		return nil, err
 	}
-	e, err := balance.NewEntry(ep)
+	e, err := balance.NewEntryWithString(req.GetEntryYmd(), ep)
 	if err != nil {
 		return nil, err
 	}
@@ -81,7 +81,7 @@ func (s *balancesServer) CreateBalance(ctx context.Context, req *pb.CreateBalanc
 		return nil, err
 	}
 
-	res := &pb.CreateBalanceResponse{Balance: balanceToProto(bwe)}
+	res := &pb.CreateResponse{Balance: balanceToProto(bwe)}
 	return res, nil
 }
 
@@ -90,31 +90,31 @@ func balanceToProto(b *balance.WithEntry) *pb.Balance {
 		Id:         b.ID.String(),
 		TypeId:     b.TypeID,
 		CurrencyId: b.CurrencyID,
-		EncData:    payloadToProto(b.Payload),
+		Payload:    payloadToProto(b.Payload),
 		CurrentEntry: &pb.Entry{
-			Id:      b.Entry.YMD.String(),
-			EncData: payloadToProto(b.Entry.Payload),
+			Ymd:     b.Entry.YMD.String(),
+			Payload: payloadToProto(b.Entry.Payload),
 		},
 	}
 }
 
-func payloadToProto(p payload.Payload) *pb.EncryptedData {
+func payloadToProto(p payload.Payload) *pb.Payload {
 	value := base64.StdEncoding.EncodeToString(p.Blob)
-	return &pb.EncryptedData{
-		VersionHash: p.Version,
-		Algo:        uint32(p.Scheme),
+	return &pb.Payload{
+		Version:     p.Version,
+		Scheme:      uint32(p.Scheme),
 		Base64Value: value,
 	}
 }
 
-func protoToPayload(encData *pb.EncryptedData) (payload.Payload, error) {
-	s, err := payload.NewScheme(int(encData.Algo))
+func protoToPayload(p *pb.Payload) (payload.Payload, error) {
+	s, err := payload.NewScheme(int(p.Scheme))
 	if err != nil {
 		return payload.Payload{}, err
 	}
-	blob, err := base64.StdEncoding.DecodeString(encData.Base64Value)
+	blob, err := base64.StdEncoding.DecodeString(p.Base64Value)
 	if err != nil {
 		return payload.Payload{}, err
 	}
-	return payload.New(s, encData.VersionHash, blob)
+	return payload.New(s, p.Version, blob)
 }
