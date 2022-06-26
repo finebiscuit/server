@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/bufbuild/connect-go v0.1.1
-	github.com/finebiscuit/proto v0.0.0-20220625184216-1b1c3ccbc40f
+	github.com/finebiscuit/proto v0.0.0-20220626130518-cb838fca1468
 	github.com/go-chi/chi/v5 v5.0.7
 	github.com/go-chi/cors v1.2.1
 	github.com/google/uuid v1.3.0
@@ -13,6 +13,7 @@ require (
 
 require (
 	github.com/davecgh/go-spew v1.1.0 // indirect
+	github.com/golang-jwt/jwt/v4 v4.4.2
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	golang.org/x/crypto v0.0.0-20220622213112-05595931fe9d

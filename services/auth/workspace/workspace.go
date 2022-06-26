@@ -1,8 +1,6 @@
 package workspace
 
 import (
-	"fmt"
-
 	"github.com/finebiscuit/server/model/buid"
 	"github.com/finebiscuit/server/services/auth/user"
 )
@@ -37,7 +35,7 @@ func New(userID user.ID, displayName string) (*Workspace, error) {
 
 func (ws *Workspace) CompareAccessFor(userID user.ID) error {
 	if ws.UserID != userID {
-		return fmt.Errorf("permission denied")
+		return ErrPermissionDenied
 	}
 	return nil
 }

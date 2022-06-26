@@ -29,11 +29,15 @@ github.com/finebiscuit/proto v0.0.0-20220625111558-39cc215163fb h1:p6fU+Q95GN85Y
 github.com/finebiscuit/proto v0.0.0-20220625111558-39cc215163fb/go.mod h1:hZPw0Y++1mR3luKZGC1SlnZHc+QbRXNoMl5zJlUiEfc=
 github.com/finebiscuit/proto v0.0.0-20220625184216-1b1c3ccbc40f h1:E5v+uCIn+qxU2MCLAQRgCzvuKXCc4WcpGTzwHZbfBog=
 github.com/finebiscuit/proto v0.0.0-20220625184216-1b1c3ccbc40f/go.mod h1:hZPw0Y++1mR3luKZGC1SlnZHc+QbRXNoMl5zJlUiEfc=
+github.com/finebiscuit/proto v0.0.0-20220626130518-cb838fca1468 h1:89Dqopsc0t5Y8txwXfjwqy9b2QBhOCSFyEey9T9IBL8=
+github.com/finebiscuit/proto v0.0.0-20220626130518-cb838fca1468/go.mod h1:hZPw0Y++1mR3luKZGC1SlnZHc+QbRXNoMl5zJlUiEfc=
 github.com/ghodss/yaml v1.0.0/go.mod h1:4dBDuWmgqj2HViK6kFavaiC9ZROes6MMH2rRYeMEF04=
 github.com/go-chi/chi/v5 v5.0.7 h1:rDTPXLDHGATaeHvVlLcR4Qe0zftYethFucbjVQ1PxU8=
 github.com/go-chi/chi/v5 v5.0.7/go.mod h1:DslCQbL2OYiznFReuXYUmQ2hGd1aDpCnlMNITLSKoi8=
 github.com/go-chi/cors v1.2.1 h1:xEC8UT3Rlp2QuWNEr4Fs/c2EAGVKBwy/1vHx3bppil4=
 github.com/go-chi/cors v1.2.1/go.mod h1:sSbTewc+6wYHBBCW7ytsFSn836hqM7JxpglAy2Vzc58=
+github.com/golang-jwt/jwt/v4 v4.4.2 h1:rcc4lwaZgFMCZ5jxF9ABolDcIHdBytAFgqFPbSJQAYs=
+github.com/golang-jwt/jwt/v4 v4.4.2/go.mod h1:m21LjoU+eqJr34lmDMbreY2eSTRJ1cv77w39/MY0Ch0=
 github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b/go.mod h1:SBH7ygxi8pfUlaOkMMuAQtPIUF8ecWP5IEl/CR7VP2Q=
 github.com/golang/mock v1.1.1/go.mod h1:oTYuIxOrZwtPieC+H1uAHpcLFnEyAGVDL/k47Jfbm0A=
 github.com/golang/protobuf v1.2.0/go.mod h1:6lQm79b+lXiMfvg/cZm0SGofjICqVBUtrP5yJMmIC1U=

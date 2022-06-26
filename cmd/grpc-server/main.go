@@ -11,6 +11,7 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
 
+	"github.com/finebiscuit/server/services/auth"
 	"github.com/finebiscuit/server/services/balances"
 	"github.com/finebiscuit/server/storage/inmem"
 )
@@ -25,6 +26,7 @@ func main() {
 
 	db := inmem.New()
 	balancesSvc := balances.NewService(db.BalancesTxFn())
+	authSvc := auth.NewService(db.AuthTxFn(), []byte("KeyboardCat"))
 
 	r := chi.NewRouter()
 	r.Use(middleware.RequestID)
@@ -41,6 +43,7 @@ func main() {
 		MaxAge:           300, // Maximum value not ignored by any of major browsers
 	}))
 	r.Mount(balances.NewHandler(balancesSvc))
+	r.Mount(auth.NewHandler(authSvc))
 
 	log.Println("Server running on port", port)
 	if err := http.ListenAndServe(fmt.Sprintf(":%s", port), r); err != nil {
