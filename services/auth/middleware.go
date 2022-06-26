@@ -21,6 +21,7 @@ func NewMiddleware(service Service) func(http.Handler) http.Handler {
 			token, err := service.VerifyAccessToken(r.Context(), h[len(h)-1])
 			if err != nil {
 				http.Error(w, "Invalid Authorization", http.StatusForbidden)
+				return
 			}
 
 			ctx := r.Context()

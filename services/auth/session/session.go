@@ -35,7 +35,7 @@ func New(userID user.ID, ttl time.Duration) (*Session, error) {
 		return nil, err
 	}
 
-	b := make([]byte, 32)
+	b := make([]byte, 40)
 	_, err = rand.Read(b)
 	if err != nil {
 		return nil, err
