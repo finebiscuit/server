@@ -42,8 +42,13 @@ func main() {
 		AllowCredentials: false,
 		MaxAge:           300, // Maximum value not ignored by any of major browsers
 	}))
-	r.Mount(balances.NewHandler(balancesSvc))
 	r.Mount(auth.NewHandler(authSvc))
+
+	// authorized routes
+	r.Group(func(r chi.Router) {
+		r.Use(auth.NewMiddleware(authSvc))
+		r.Mount(balances.NewHandler(balancesSvc))
+	})
 
 	log.Println("Server running on port", port)
 	if err := http.ListenAndServe(fmt.Sprintf(":%s", port), r); err != nil {
