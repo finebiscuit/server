@@ -13,6 +13,7 @@ import (
 
 	"github.com/finebiscuit/server/services/auth"
 	"github.com/finebiscuit/server/services/balances"
+	"github.com/finebiscuit/server/services/forex"
 	"github.com/finebiscuit/server/storage/inmem"
 )
 
@@ -42,12 +43,13 @@ func main() {
 		AllowCredentials: false,
 		MaxAge:           300, // Maximum value not ignored by any of major browsers
 	}))
-	r.Mount(auth.NewHandler(authSvc))
+	r.Mount(auth.NewHandler(authSvc, nil))
 
 	// authorized routes
 	r.Group(func(r chi.Router) {
 		r.Use(auth.NewMiddleware(authSvc))
 		r.Mount(balances.NewHandler(balancesSvc))
+		r.Mount(forex.NewHandler(forex.NewDummyService()))
 	})
 
 	log.Println("Server running on port", port)

@@ -8,18 +8,24 @@ import (
 	"github.com/bufbuild/connect-go"
 	authv1 "github.com/finebiscuit/proto/biscuit/auth/v1"
 	"github.com/finebiscuit/proto/biscuit/auth/v1/authv1connect"
+
+	"github.com/finebiscuit/server/services/auth/serverinfo"
 	"github.com/finebiscuit/server/services/auth/session"
 	"github.com/finebiscuit/server/services/auth/workspace"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-func NewHandler(service Service, opts ...connect.HandlerOption) (string, http.Handler) {
+func NewHandler(service Service, srvInfo *serverinfo.ServerInfo, opts ...connect.HandlerOption) (string, http.Handler) {
 	h := &handler{Auth: service}
+	if srvInfo != nil {
+		h.srvInfo = *srvInfo
+	}
 	return authv1connect.NewAuthHandler(h, opts...)
 }
 
 type handler struct {
-	Auth Service
+	Auth    Service
+	srvInfo serverinfo.ServerInfo
 }
 
 func (h *handler) SignUp(
@@ -61,6 +67,7 @@ func (h *handler) CreateSession(
 			UserEmail: ident.UserEmail,
 		},
 		Workspaces: make([]*authv1.Workspace, 0, len(ws)),
+		ServerInfo: h.srvInfo.AsProto(),
 	})
 
 	for _, w := range ws {
