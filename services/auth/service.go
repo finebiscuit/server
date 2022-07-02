@@ -82,7 +82,14 @@ func (s *serviceImpl) CreateSession(
 		if err := uow.Sessions().Create(ctx, sess); err != nil {
 			return err
 		}
+		return nil
+	})
+	if err != nil {
+		return nil, nil, nil, err
+	}
 
+	// This must be a separate transaction.
+	err = s.tx(ctx, func(ctx context.Context, uow UnitOfWork) error {
 		u, err = uow.Users().Get(ctx, sess.UserID)
 		if err != nil {
 			return err

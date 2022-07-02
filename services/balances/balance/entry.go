@@ -6,8 +6,9 @@ import (
 )
 
 type Entry struct {
-	YMD     date.Date
-	Payload payload.Payload
+	YMD       date.Date
+	Payload   payload.Payload
+	IsCurrent bool
 }
 
 func NewEntry(p payload.Payload) (*Entry, error) {
@@ -25,8 +26,9 @@ func NewEntryWithString(ymd string, p payload.Payload) (*Entry, error) {
 
 func NewEntryWithDate(ymd date.Date, p payload.Payload) (*Entry, error) {
 	e := &Entry{
-		YMD:     ymd,
-		Payload: p,
+		YMD:       ymd,
+		Payload:   p,
+		IsCurrent: ymd == date.Today(),
 	}
 	return e, nil
 }

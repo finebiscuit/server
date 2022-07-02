@@ -57,7 +57,6 @@ func (s serviceImpl) ListBalances(ctx context.Context, filter balance.Filter) ([
 func (s serviceImpl) CreateBalance(
 	ctx context.Context, b *balance.Balance, e *balance.Entry,
 ) (*balance.WithEntry, error) {
-	var result *balance.WithEntry
 	err := s.tx(ctx, func(ctx context.Context, uow UnitOfWork) (err error) {
 		if err := uow.Balances().Create(ctx, b); err != nil {
 			return err
@@ -67,6 +66,15 @@ func (s serviceImpl) CreateBalance(
 			return err
 		}
 
+		return nil
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	// This must be a separate transaction.
+	var result *balance.WithEntry
+	err = s.tx(ctx, func(ctx context.Context, uow UnitOfWork) error {
 		result, err = uow.Balances().Get(ctx, b.ID)
 		if err != nil {
 			return err
@@ -76,7 +84,6 @@ func (s serviceImpl) CreateBalance(
 	if err != nil {
 		return nil, err
 	}
-
 	return result, nil
 }
 
@@ -97,13 +104,22 @@ func (s serviceImpl) UpdateEntry(
 	ctx context.Context, balanceID balance.ID, e *balance.Entry, versionMatch string,
 ) error {
 	err := s.tx(ctx, func(ctx context.Context, uow UnitOfWork) error {
-		e, err := uow.Balances().GetEntry(ctx, balanceID, e.YMD)
+		b, err := uow.Balances().Get(ctx, balanceID)
 		if err != nil {
 			return err
 		}
 
-		if e.Payload.Version != versionMatch {
+		prev, err := uow.Balances().GetEntry(ctx, b.ID, e.YMD)
+		if err != nil {
+			return err
+		}
+
+		if prev.Payload.Version != versionMatch {
 			return balance.ErrVersionMismatch
+		}
+
+		if e.YMD == b.Entry.YMD || e.YMD.After(b.Entry.YMD) {
+			e.IsCurrent = true
 		}
 
 		if err := uow.Balances().UpdateEntry(ctx, balanceID, e); err != nil {
