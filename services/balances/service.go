@@ -62,6 +62,7 @@ func (s serviceImpl) CreateBalance(
 			return err
 		}
 
+		e.IsCurrent = true
 		if err := uow.Balances().CreateEntry(ctx, b.ID, e); err != nil {
 			return err
 		}

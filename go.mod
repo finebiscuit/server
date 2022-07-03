@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/bufbuild/connect-go v0.1.1
-	github.com/finebiscuit/proto v0.0.0-20220627193457-f61c068d9b11
+	github.com/finebiscuit/proto v0.0.0-20220703141742-79bd58245cba
 	github.com/go-chi/chi/v5 v5.0.7
 	github.com/go-chi/cors v1.2.1
 	github.com/google/uuid v1.3.0
